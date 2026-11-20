@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Matematika SMK Kurikulum Merdeka (Kelas 10-12)</title>
+    
+    <!-- BAGIAN 1: CSS (Desain Ungu-Hitam-Putih + Dekorasi Bunga + Responsif) -->
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #121212; /* Hitam pekat */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 35px 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+
+        /* Kotak utama kalkulator */
+        .kalkulator {
+            position: relative;
+            background-color: #1e1e24; /* Hitam keabu-abuan */
+            padding: 25px 22px 22px 22px;
+            border-radius: 22px;
+            box-shadow: 0 15px 35px rgba(157, 78, 221, 0.35); /* Bayangan ungu */
+            border: 2px solid #7b2cbf; /* Garis tepi ungu */
+            width: 100%;
+            max-width: 440px;
+            z-index: 1;
+        }
+
+        /* Dekorasi Gambar Bunga di Sudut Kiri Atas */
+        .bunga-atas {
+            position: absolute;
+            top: -28px;
+            left: -28px;
+            width: 75px;
+            height: 75px;
+            z-index: 2;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+        }
+
+        /* Dekorasi Gambar Bunga di Sudut Kanan Bawah */
+        .bunga-bawah {
+            position: absolute;
+            bottom: -25px;
+            right: -25px;
+            width: 65px;
+            height: 65px;
+            z-index: 2;
+            pointer-events: none;
+            transform: rotate(45deg);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+        }
+
+        /* Header Judul */
+        .header-judul {
+            text-align: center;
+            margin-bottom: 14px;
+            padding-left: 18px;
+        }
+
+        .header-judul h1 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #e0aaff;
+            letter-spacing: 0.4px;
+        }
+
+        .header-judul p {
+            font-size: 11px;
+            color: #b8b8c7;
+            margin-top: 2px;
+        }
+
+        /* Navigasi 4 Tab Kelas/Mode */
+        .tab-nav {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            background-color: #141418;
+            padding: 5px;
+            border-radius: 14px;
+            margin-bottom: 16px;
+            border: 1px solid #3c096c;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: #b8b8c7;
+            border: none;
+            padding: 8px 4px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1.25;
+            text-align: center;
+        }
+
+        .tab-btn span {
+            display: block;
+            font-size: 9.5px;
+            font-weight: 400;
+            opacity: 0.85;
+        }
+
+        .tab-btn:hover {
+            color: #ffffff;
+            background-color: #2b2b36;
+        }
+
+        .tab-btn.aktif {
+            background-color: #7b2cbf;
+            color: #ffffff;
+            box-shadow: 0 3px 10px rgba(123, 44, 191, 0.45);
+        }
+
+        /* Konten Tab */
+        .tab-konten {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .tab-konten.aktif {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === TAB 1: KALKULATOR ILMIAH === */
+        .layar-wrapper {
+            background-color: #ffffff;
+            border-radius: 14px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.18);
+            position: relative;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .badge-mode {
+            background-color: #7b2cbf;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s;
+        }
+
+        .badge-mode:hover {
+            background-color: #9d4edd;
+        }
+
+        .riwayat-kecil {
+            font-size: 11px;
+            color: #6c757d;
+            max-width: 75%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: right;
+        }
+
+        #layar {
+            width: 100%;
+            height: 44px;
+            background: transparent;
+            color: #121212;
+            border: none;
+            text-align: right;
+            font-size: 26px;
+            font-weight: bold;
+            outline: none;
+        }
+
+        /* Grid Tombol Ilmiah (5 Kolom) */
+        .tombol-scientific {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .tombol-scientific button {
+            height: 44px;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            border-radius: 11px;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .tombol-scientific button:active {
+            transform: scale(0.93);
+        }
+
+        .btn-angka {
+            background-color: #ffffff;
+            color: #121212;
+            font-size: 16px !important;
+        }
+        .btn-angka:hover {
+            background-color: #e6e6e6;
+        }
+
+        .btn-operator {
+            background-color: #7b2cbf;
+            color: #ffffff;
+            font-size: 16px !important;
+        }
+        .btn-operator:hover {
+            background-color: #9d4edd;
+        }
+
+        .btn-fungsi {
+            background-color: #2b2b36;
+            color: #e0aaff;
+            border: 1px solid #3c096c !important;
+        }
+        .btn-fungsi:hover {
+            background-color: #3a3a48;
+            color: #ffffff;
+        }
+
+        .btn-hapus {
+            background-color: #3c096c;
+            color: #ffccd5;
+        }
+        .btn-hapus:hover {
+            background-color: #5a189a;
+        }
+
+        .btn-sama-dengan {
+            background-color: #9d4edd;
+            color: #ffffff;
+            grid-column: span 2;
+            font-size: 18px !important;
+        }
+        .btn-sama-dengan:hover {
+            background-color: #c77dff;
+            color: #121212;
+        }
+
+        /* === STYLING KARTU MATERI PER KELAS === */
+        .pemilih-bab-box {
+            background-color: #26262f;
+            border: 1px solid #5a189a;
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .pemilih-bab-box label {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #e0aaff;
+            margin-bottom: 6px;
+        }
+
+        .kartu-rumus {
+            background-color: #26262f;
+            border: 1px solid #3c096c;
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .kartu-rumus h3 {
+            font-size: 13.5px;
+            color: #c77dff;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rumus-badge {
+            font-size: 10px;
+            background-color: #3c096c;
+            color: #e0aaff;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .sub-pemisah {
+            border-top: 1px dashed #4a148c;
+            margin: 12px 0;
+            padding-top: 10px;
+        }
+
+        .sub-judul {
+            font-size: 12px;
+            font-weight: 700;
+            color: #e0aaff;
+            margin-bottom: 8px;
+        }
+
+        .grid-input-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .grid-input-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .grup-input {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 8px;
+        }
+
+        .grup-input label {
+            font-size: 11px;
+            color: #d0d0dc;
+            margin-bottom: 4px;
+        }
+
+        .input-putih, .select-putih {
+            width: 100%;
+            background-color: #ffffff;
+            color: #121212;
+            border: none;
+            border-radius: 9px;
+            padding: 8px 10px;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .input-putih:focus, .select-putih:focus {
+            box-shadow: 0 0 0 2px #9d4edd;
+        }
+
+        .btn-hitung-rumus {
+            width: 100%;
+            background-color: #7b2cbf;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 9px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 2px;
+        }
+
+        .btn-hitung-rumus:hover {
+            background-color: #9d4edd;
+        }
+
+        .btn-hitung-rumus:active {
+            transform: scale(0.98);
+        }
+
+        /* Kotak Hasil Putih Bersih */
+        .kotak-hasil {
+            margin-top: 10px;
+            background-color: #ffffff;
+            color: #121212;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 12.5px;
+            line-height: 1.55;
+            border-left: 4px solid #7b2cbf;
+            word-wrap: break-word;
+        }
+
+        .kotak-hasil .rumus-teks {
+            display: block;
+            font-size: 11px;
+            color: #555555;
+            background-color: #f3e8ff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-family: Consolas, monospace;
+        }
+
+        .kotak-hasil strong {
+            color: #5a189a;
+        }
+
+        .teks-error {
+            color: #d00000;
+            font-weight: bold;
+        }
+
+        @media (max-width: 400px) {
+            .kalkulator {
+                padding: 20px 15px;
+            }
+            .tab-btn {
+                font-size: 10px;
+                padding: 7px 2px;
+            }
+            .tombol-scientific button {
+                height: 40px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BAGIAN 2: HTML (Kerangka Kalkulator & Gambar Bunga SVG) -->
+    <div class="kalkulator">
+        
+        <!-- Gambar Bunga 1 (Sudut Kiri Atas) -->
+        <svg class="bunga-atas" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="22" r="18" fill="#9d4edd"/>
+            <circle cx="76" cy="40" r="18" fill="#7b2cbf"/>
+            <circle cx="66" cy="72" r="18" fill="#9d4edd"/>
+            <circle cx="34" cy="72" r="18" fill="#7b2cbf"/>
+            <circle cx="24" cy="40" r="18" fill="#9d4edd"/>
+            <circle cx="50" cy="50" r="14" fill="#ffffff"/>
+            <circle cx="50" cy="50" r="7" fill="#c77dff"/>
+        </svg>
+
+        <!-- Judul Utama -->
+        <div class="header-judul">
+            <h1>Kalkulator Matematika SMK</h1>
+            <p>Kurikulum Merdeka • Fase E & Fase F (Kelas 10–12)</p>
+        </div>
+
+        <!-- Navigasi 4 Tab Utama -->
+        <div class="tab-nav">
+            <button class="tab-btn aktif" onclick="pindahTab('tab-umum', this)">
+                Umum<span>(Ilmiah)</span>
+            </button>
+            <button class="tab-btn" onclick="pindahTab('tab-kelas10', this)">
+                Kelas 10<span>(Fase E)</span>
+            </button>
+            <button class="tab-btn" onclick="pindahTab('tab-kelas11', this)">
+                Kelas 11<span>(Fase F1)</span>
+            </button>
+            <button class="tab-btn" onclick="pindahTab('tab-kelas12', this)">
+                Kelas 12<span>(Fase F2)</span>
+            </button>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- TAB 1: UMUM (ILMIAH / SCIENTIFIC)                         -->
+        <!-- ========================================================= -->
+        <div id="tab-umum" class="tab-konten aktif">
+            <div class="layar-wrapper">
+                <div class="status-bar">
+                    <span id="badge-sudut" class="badge-mode" onclick="toggleSudut()" title="Klik untuk ganti Derajat / Radian">DEG</span>
+                    <span id="riwayat-layar" class="riwayat-kecil">Siap menghitung</span>
+                </div>
+                <input type="text" id="layar" readonly placeholder="0">
+            </div>
+
+            <div class="tombol-scientific">
+                <!-- Baris 1 -->
+                <button class="btn-fungsi" onclick="tambahFungsi('sin(')">sin</button>
+                <button class="btn-fungsi" onclick="tambahFungsi('cos(')">cos</button>
+                <button class="btn-fungsi" onclick="tambahFungsi('tan(')">tan</button>
+                <button class="btn-fungsi" onclick="tambahFungsi('log(')">log</button>
+                <button class="btn-fungsi" onclick="tambahFungsi('ln(')">ln</button>
+
+                <!-- Baris 2 -->
+                <button class="btn-fungsi" onclick="tambahFungsi('√(')">√</button>
+                <button class="btn-fungsi" onclick="tambahKarakter('^')">xʸ</button>
+                <button class="btn-fungsi" onclick="tambahKarakter('π')">π</button>
+                <button class="btn-fungsi" onclick="tambahKarakter('(')">(</button>
+                <button class="btn-fungsi" onclick="tambahKarakter(')')">)</button>
+
+                <!-- Baris 3 -->
+                <button class="btn-fungsi" onclick="tambahKarakter('e')">e</button>
+                <button class="btn-fungsi" onclick="tambahKarakter('!')">n!</button>
+                <button class="btn-fungsi" onclick="tambahKarakter('%')">%</button>
+                <button class="btn-hapus" onclick="hapusSemua()">C</button>
+                <button class="btn-hapus" onclick="hapusSatu()">⌫</button>
+
+                <!-- Baris 4 -->
+                <button class="btn-angka" onclick="tambahKarakter('7')">7</button>
+                <button class="btn-angka" onclick="tambahKarakter('8')">8</button>
+                <button class="btn-angka" onclick="tambahKarakter('9')">9</button>
+                <button class="btn-operator" onclick="tambahKarakter('÷')">÷</button>
+                <button class="btn-operator" onclick="tambahKarakter('×')">×</button>
+
+                <!-- Baris 5 -->
+                <button class="btn-angka" onclick="tambahKarakter('4')">4</button>
+                <button class="btn-angka" onclick="tambahKarakter('5')">5</button>
+                <button class="btn-angka" onclick="tambahKarakter('6')">6</button>
+                <button class="btn-operator" onclick="tambahKarakter('-')">-</button>
+                <button class="btn-operator" onclick="tambahKarakter('+')">+</button>
+
+                <!-- Baris 6 -->
+                <button class="btn-angka" onclick="tambahKarakter('1')">1</button>
+                <button class="btn-angka" onclick="tambahKarakter('2')">2</button>
+                <button class="btn-angka" onclick="tambahKarakter('3')">3</button>
+                <button class="btn-angka" onclick="tambahKarakter('0')">0</button>
+                <button class="btn-angka" onclick="tambahKarakter('.')">.</button>
+                
+                <!-- Baris 7 -->
+                <button class="btn-fungsi" onclick="tambahKarakter('00')">00</button>
+                <button class="btn-fungsi" onclick="pakaiJawabanSebelumnya()">ANS</button>
+                <button class="btn-fungsi" onclick="tambahKarakter('^2')">x²</button>
+                <button class="btn-sama-dengan" onclick="hitungIlmiah()">=</button>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- TAB 2: KELAS 10 (FASE E) - 8 BAB BERURUTAN                -->
+        <!-- ========================================================= -->
+        <div id="tab-kelas10" class="tab-konten">
+            <div class="pemilih-bab-box">
+                <label for="pilih-bab-10">Pilih Materi Kelas 10 (Fase E):</label>
+                <select id="pilih-bab-10" class="select-putih" onchange="renderBabKelas10()">
+                    <option value="1">Bab 1: Eksponen & Logaritma</option>
+                    <option value="2">Bab 2: Barisan & Deret</option>
+                    <option value="3">Bab 3: Vektor & Operasinya</option>
+                    <option value="4">Bab 4: Trigonometri Dasar</option>
+                    <option value="5">Bab 5: SPLDV (Sistem Persamaan Linear)</option>
+                    <option value="6">Bab 6: Fungsi Kuadrat</option>
+                    <option value="7">Bab 7: Statistika Dasar</option>
+                    <option value="8">Bab 8: Peluang Kejadian</option>
+                </select>
+            </div>
+            <div id="konten-kelas10" class="kartu-rumus">
+                <!-- Dirender otomatis oleh JS -->
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- TAB 3: KELAS 11 (FASE F1) - 3 BAB BERURUTAN               -->
+        <!-- ========================================================= -->
+        <div id="tab-kelas11" class="tab-konten">
+            <div class="pemilih-bab-box">
+                <label for="pilih-bab-11">Pilih Materi Kelas 11 (Fase F1):</label>
+                <select id="pilih-bab-11" class="select-putih" onchange="renderBabKelas11()">
+                    <option value="1">Bab 1: Fungsi Komposisi & Invers</option>
+                    <option value="2">Bab 2: Geometri Lingkaran</option>
+                    <option value="3">Bab 3: Statistika Lanjut (Bivariat)</option>
+                </select>
+            </div>
+            <div id="konten-kelas11" class="kartu-rumus">
+                <!-- Dirender otomatis oleh JS -->
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- TAB 4: KELAS 12 (FASE F2) - 3 BAB BERURUTAN               -->
+        <!-- ========================================================= -->
+        <div id="tab-kelas12" class="tab-konten">
+            <div class="pemilih-bab-box">
+                <label for="pilih-bab-12">Pilih Materi Kelas 12 (Fase F2):</label>
+                <select id="pilih-bab-12" class="select-putih" onchange="renderBabKelas12()">
+                    <option value="1">Bab 1: Matematika Finansial</option>
+                    <option value="2">Bab 2: Kombinatorik & Peluang Lanjut</option>
+                    <option value="3">Bab 3: Kalkulus Dasar (Limit, Turunan, Integral)</option>
+                </select>
+            </div>
+            <div id="konten-kelas12" class="kartu-rumus">
+                <!-- Dirender otomatis oleh JS -->
+            </div>
+        </div>
+
+        <!-- Gambar Bunga 2 (Sudut Kanan Bawah) -->
+        <svg class="bunga-bawah" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="22" r="18" fill="#c77dff"/>
+            <circle cx="76" cy="40" r="18" fill="#9d4edd"/>
+            <circle cx="66" cy="72" r="18" fill="#c77dff"/>
+            <circle cx="34" cy="72" r="18" fill="#9d4edd"/>
+            <circle cx="24" cy="40" r="18" fill="#c77dff"/>
+            <circle cx="50" cy="50" r="14" fill="#ffffff"/>
+            <circle cx="50" cy="50" r="7" fill="#5a189a"/>
+        </svg>
+
+    </div>
+
+    <!-- BAGIAN 3: JAVASCRIPT (Logika Ilmiah & Semua Materi Kelas 10-12) -->
+    <script>
+        /* =============================================================
+           UTILITAS UMUM & NAVIGASI TAB
+           ============================================================= */
+        function pindahTab(idTab, tombolAktif) {
+            document.querySelectorAll('.tab-konten').forEach(el => el.classList.remove('aktif'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('aktif'));
+            document.getElementById(idTab).classList.add('aktif');
+            tombolAktif.classList.add('aktif');
+        }
+
+        // Pembulatan angka desimal agar bersih dan mudah dibaca
+        function fmt(angka, desimal = 4) {
+            if (!Number.isFinite(angka)) return 'Tak Hingga';
+            const faktor = Math.pow(10, desimal);
+            return Math.round(angka * faktor) / faktor;
+        }
+
+        function fmtRp(angka) {
+            return 'Rp ' + Math.round(angka).toLocaleString('id-ID');
+        }
+
+        /* =============================================================
+           1. LOGIKA TAB UMUM (KALKULATOR ILMIAH)
+           ============================================================= */
+        const layar = document.getElementById('layar');
+        const riwayatLayar = document.getElementById('riwayat-layar');
+        const badgeSudut = document.getElementById('badge-sudut');
+
+        let modeSudut = 'DEG';
+        let jawabanTerakhir = 0;
+        let baruSajaHitung = false;
+
+        function toggleSudut() {
+            modeSudut = (modeSudut === 'DEG') ? 'RAD' : 'DEG';
+            badgeSudut.textContent = modeSudut;
+        }
+
+        function tambahKarakter(karakter) {
+            const daftarOperator = ['+', '-', '×', '÷', '^'];
+            if (layar.value === 'Error' || layar.value === 'Tak Hingga') layar.value = '';
+            if (baruSajaHitung && !daftarOperator.includes(karakter) && karakter !== '!' && karakter !== '%') {
+                layar.value = '';
+            }
+            baruSajaHitung = false;
+
+            const teksSekarang = layar.value;
+            const karakterTerakhir = teksSekarang.slice(-1);
+
+            if (daftarOperator.includes(karakter) && daftarOperator.includes(karakterTerakhir)) {
+                layar.value = teksSekarang.slice(0, -1) + karakter;
+                return;
+            }
+            if (teksSekarang === '' && ['+', '×', '÷', '^', '!', '%'].includes(karakter)) return;
+
+            layar.value += karakter;
+        }
+
+        function tambahFungsi(fungsi) {
+            if (layar.value === 'Error' || layar.value === 'Tak Hingga' || baruSajaHitung) layar.value = '';
+            baruSajaHitung = false;
+            layar.value += fungsi;
+        }
+
+        function pakaiJawabanSebelumnya() {
+            if (layar.value === 'Error' || layar.value === 'Tak Hingga' || baruSajaHitung) layar.value = '';
+            baruSajaHitung = false;
+            layar.value += jawabanTerakhir;
+        }
+
+        function hapusSemua() {
+            layar.value = '';
+            riwayatLayar.textContent = 'Siap menghitung';
+            baruSajaHitung = false;
+        }
+
+        function hapusSatu() {
+            if (layar.value === 'Error' || layar.value === 'Tak Hingga') layar.value = '';
+            else layar.value = layar.value.slice(0, -1);
+        }
+
+        function faktorial(n) {
+            if (n < 0 || !Number.isInteger(n)) throw new Error('Bilangan harus bulat ≥ 0');
+            if (n > 170) return Infinity;
+            if (n === 0 || n === 1) return 1;
+            let hasil = 1;
+            for (let i = 2; i <= n; i++) hasil *= i;
+            return hasil;
+        }
+
+        function hitungSin(x) {
+            const rad = (modeSudut === 'DEG') ? (x * Math.PI / 180) : x;
+            const res = Math.sin(rad);
+            return Math.abs(res) < 1e-12 ? 0 : res;
+        }
+
+        function hitungCos(x) {
+            const rad = (modeSudut === 'DEG') ? (x * Math.PI / 180) : x;
+            const res = Math.cos(rad);
+            return Math.abs(res) < 1e-12 ? 0 : res;
+        }
+
+        function hitungTan(x) {
+            if (modeSudut === 'DEG' && Math.abs(x % 180) === 90) throw new Error('Tak terdefinisi');
+            const rad = (modeSudut === 'DEG') ? (x * Math.PI / 180) : x;
+            const res = Math.tan(rad);
+            return Math.abs(res) < 1e-12 ? 0 : res;
+        }
+
+        function hitungIlmiah() {
+            if (layar.value === '') return;
+            const ekspresiAsli = layar.value;
+            try {
+                let ekspresi = ekspresiAsli;
+                const bukaKurung = (ekspresi.match(/\(/g) || []).length;
+                const tutupKurung = (ekspresi.match(/\)/g) || []).length;
+                if (bukaKurung > tutupKurung) ekspresi += ')'.repeat(bukaKurung - tutupKurung);
+
+                ekspresi = ekspresi
+                    .replace(/(\d)(π|e|sin|cos|tan|log|ln|√|\()/g, '$1*$2')
+                    .replace(/(\)|π|e)(\d|π|e|sin|cos|tan|log|ln|√|\()/g, '$1*$2')
+                    .replace(/×/g, '*')
+                    .replace(/÷/g, '/')
+                    .replace(/\^/g, '**')
+                    .replace(/π/g, 'Math.PI')
+                    .replace(/\be\b/g, 'Math.E')
+                    .replace(/√\(/g, 'Math.sqrt(')
+                    .replace(/log\(/g, 'Math.log10(')
+                    .replace(/ln\(/g, 'Math.log(')
+                    .replace(/sin\(/g, 'hitungSin(')
+                    .replace(/cos\(/g, 'hitungCos(')
+                    .replace(/tan\(/g, 'hitungTan(')
+                    .replace(/(\d+)%/g, '($1/100)')
+                    .replace(/(\d+)!/g, 'faktorial($1)');
+
+                const hasilRaw = new Function('return ' + ekspresi)();
+                if (Number.isNaN(hasilRaw)) throw new Error('NaN');
+                if (!Number.isFinite(hasilRaw)) {
+                    riwayatLayar.textContent = ekspresiAsli + ' =';
+                    layar.value = 'Tak Hingga';
+                    baruSajaHitung = true;
+                    return;
+                }
+
+                const hasilBersih = Math.round(hasilRaw * 1e10) / 1e10;
+                riwayatLayar.textContent = ekspresiAsli + ' =';
+                layar.value = hasilBersih;
+                jawabanTerakhir = hasilBersih;
+                baruSajaHitung = true;
+            } catch (err) {
+                layar.value = 'Error';
+                baruSajaHitung = true;
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('tab-umum').classList.contains('aktif')) return;
+            if (document.activeElement.tagName === 'INPUT' && document.activeElement.id !== 'layar') return;
+
+            if (e.key >= '0' && e.key <= '9') tambahKarakter(e.key);
+            else if (e.key === '.') tambahKarakter('.');
+            else if (e.key === '+') tambahKarakter('+');
+            else if (e.key === '-') tambahKarakter('-');
+            else if (e.key === '*') tambahKarakter('×');
+            else if (e.key === '/') { e.preventDefault(); tambahKarakter('÷'); }
+            else if (e.key === '^') tambahKarakter('^');
+            else if (e.key === '(' || e.key === ')') tambahKarakter(e.key);
+            else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); hitungIlmiah(); }
+            else if (e.key === 'Backspace') hapusSatu();
+            else if (e.key === 'Escape') hapusSemua();
+        });
+
+        /* =============================================================
+           2. MATERI KELAS 10 (FASE E) - BAB 1 S.D. BAB 8
+           ============================================================= */
+        function renderBabKelas10() {
+            const bab = document.getElementById('pilih-bab-10').value;
+            const wadah = document.getElementById('konten-kelas10');
+
+            if (bab === '1') {
+                // Bab 1: Eksponen & Logaritma
+                wadah.innerHTML = `
+                    <h3>Bab 1: Eksponen & Bentuk Akar <span class="rumus-badge">aⁿ & ⁿ√a</span></h3>
+                    <div class="grid-input-2">
+                        <div class="grup-input"><label>Bilangan Pokok (a)</label><input type="number" id="k10-eks-a" class="input-putih" placeholder="8"></div>
+                        <div class="grup-input"><label>Pangkat / Indeks Akar (n)</label><input type="number" id="k10-eks-n" class="input-putih" placeholder="3"></div>
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK10Eksponen()">Hitung Pangkat & Akar</button>
+                    <div id="res-k10-eks" class="kotak-hasil">Menghitung nilai aⁿ dan akar pangkat n (ⁿ√a).</div>
+
+                    <div class="sub-pemisah">
+                        <div class="sub-judul">Logaritma Basis Bebas (ᵃlog b)</div>
+                        <div class="grid-input-2">
+                            <div class="grup-input"><label>Basis (a)</label><input type="number" id="k10-log-a" class="input-putih" placeholder="2"></div>
+                            <div class="grup-input"><label>Numerus (b)</label><input type="number" id="k10-log-b" class="input-putih" placeholder="32"></div>
+                        </div>
+                        <button class="btn-hitung-rumus" onclick="hitungK10Log()">Hitung ᵃlog(b)</button>
+                        <div id="res-k10-log" class="kotak-hasil">Syarat: a > 0, a ≠ 1, dan b > 0.</div>
+                    </div>
+                `;
+            } else if (bab === '2') {
+                // Bab 2: Barisan & Deret
+                wadah.innerHTML = `
+                    <h3>Bab 2: Barisan & Deret <span class="rumus-badge">Aritmetika & Geometri</span></h3>
+                    <div class="grup-input">
+                        <label>Jenis Barisan / Deret:</label>
+                        <select id="k10-deret-jenis" class="select-putih" onchange="ubahLabelDeret()">
+                            <option value="aritmetika">Aritmetika (Beda = b)</option>
+                            <option value="geometri">Geometri (Rasio = r)</option>
+                        </select>
+                    </div>
+                    <div class="grid-input-3">
+                        <div class="grup-input"><label>Suku Awal (a)</label><input type="number" id="k10-deret-a" class="input-putih" placeholder="3"></div>
+                        <div class="grup-input"><label id="lbl-deret-br">Beda (b)</label><input type="number" id="k10-deret-br" class="input-putih" placeholder="4"></div>
+                        <div class="grup-input"><label>Suku ke- (n)</label><input type="number" id="k10-deret-n" class="input-putih" placeholder="10"></div>
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK10Deret()">Hitung Un, Sn & S∞</button>
+                    <div id="res-k10-deret" class="kotak-hasil">Pilih jenis deret dan masukkan nilai a, b/r, dan n.</div>
+                `;
+            } else if (bab === '3') {
+                // Bab 3: Vektor & Operasinya
+                wadah.innerHTML = `
+                    <h3>Bab 3: Vektor & Operasinya <span class="rumus-badge">2D & 3D</span></h3>
+                    <div class="grup-input">
+                        <label>Dimensi Ruang Vektor:</label>
+                        <select id="k10-vek-dim" class="select-putih" onchange="ubahDimensiVektor()">
+                            <option value="2">Vektor 2D (x, y)</option>
+                            <option value="3">Vektor 3D (x, y, z)</option>
+                        </select>
+                    </div>
+                    <div class="sub-judul">Komponen Vektor u:</div>
+                    <div id="grup-vek-u" class="grid-input-2">
+                        <div class="grup-input"><label>x₁</label><input type="number" id="k10-ux" class="input-putih" placeholder="3"></div>
+                        <div class="grup-input"><label>y₁</label><input type="number" id="k10-uy" class="input-putih" placeholder="4"></div>
+                    </div>
+                    <div class="sub-judul">Komponen Vektor v:</div>
+                    <div id="grup-vek-v" class="grid-input-2">
+                        <div class="grup-input"><label>x₂</label><input type="number" id="k10-vx" class="input-putih" placeholder="1"></div>
+                        <div class="grup-input"><label>y₂</label><input type="number" id="k10-vy" class="input-putih" placeholder="2"></div>
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK10Vektor()">Hitung Operasi Vektor</button>
+                    <div id="res-k10-vektor" class="kotak-hasil">Menghitung u + v, u - v, panjang |u| & |v|, serta dot product (u • v).</div>
+                `;
+            } else if (bab === '4') {
+                // Bab 4: Trigonometri Dasar
+                wadah.innerHTML = `
+                    <h3>Bab 4: Trigonometri Dasar <span class="rumus-badge">Segitiga & Sudut</span></h3>
+                    <div class="grup-input">
+                        <label>Pilih Jenis Perhitungan:</label>
+                        <select id="k10-trigo-mode" class="select-putih" onchange="renderModeTrigo10()">
+                            <option value="siku">Segitiga Siku-Siku (Depan, Samping, Miring)</option>
+                            <option value="cosinus">Aturan Cosinus Segitiga (Sisi-Sudut-Sisi)</option>
+                            <option value="sinus">Aturan Sinus Segitiga (Cari Sisi b)</option>
+                        </select>
+                    </div>
+                    <div id="wadah-input-trigo10"></div>
+                    <button class="btn-hitung-rumus" onclick="hitungK10Trigo()">Hitung Trigonometri</button>
+                    <div id="res-k10-trigo" class="kotak-hasil">Masukkan sisi segitiga siku-siku untuk mencari sin, cos, tan.</div>
+                `;
+                renderModeTrigo10();
+            } else if (bab === '5') {
+                // Bab 5: SPLDV
+                wadah.innerHTML = `
+                    <h3>Bab 5: SPLDV <span class="rumus-badge">ax + by = c</span></h3>
+                    <div class="sub-judul">Persamaan 1: a₁x + b₁y = c₁</div>
+                    <div class="grid-input-3">
+                        <div class="grup-input"><label>a₁</label><input type="number" id="spl-a1" class="input-putih" placeholder="2"></div>
+                        <div class="grup-input"><label>b₁</label><input type="number" id="spl-b1" class="input-putih" placeholder="3"></div>
+                        <div class="grup-input"><label>c₁</label><input type="number" id="spl-c1" class="input-putih" placeholder="12"></div>
+                    </div>
+                    <div class="sub-judul">Persamaan 2: a₂x + b₂y = c₂</div>
+                    <div class="grid-input-3">
+                        <div class="grup-input"><label>a₂</label><input type="number" id="spl-a2" class="input-putih" placeholder="1"></div>
+                        <div class="grup-input"><label>b₂</label><input type="number" id="spl-b2" class="input-putih" placeholder="-1"></div>
+                        <div class="grup-input"><label>c₂</label><input type="number" id="spl-c2" class="input-putih" placeholder="1"></div>
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK10SPLDV()">Cari Nilai x dan y</button>
+                    <div id="res-k10-spldv" class="kotak-hasil">Menggunakan metode determinan (Aturan Cramer).</div>
+                `;
+            } else if (bab === '6') {
+                // Bab 6: Fungsi Kuadrat
+                wadah.innerHTML = `
+                    <h3>Bab 6: Fungsi Kuadrat <span class="rumus-badge">f(x) = ax² + bx + c</span></h3>
+                    <div class="grid-input-3">
+                        <div class="grup-input"><label>Nilai a</label><input type="number" id="fk-a" class="input-putih" placeholder="1"></div>
+                        <div class="grup-input"><label>Nilai b</label><input type="number" id="fk-b" class="input-putih" placeholder="-4"></div>
+                        <div class="grup-input"><label>Nilai c</label><input type="number" id="fk-c" class="input-putih" placeholder="3"></div>
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK10Kuadrat()">Analisis Fungsi Kuadrat</button>
+                    <div id="res-k10-kuadrat" class="kotak-hasil">Menghitung Diskriminan (D), Akar (x₁, x₂), dan Titik Puncak (xp, yp).</div>
+                `;
+            } else if (bab === '7') {
+                // Bab 7: Statistika Dasar
+                wadah.innerHTML = `
+                    <h3>Bab 7: Statistika Dasar <span class="rumus-badge">Pemusatan & Penyebaran</span></h3>
+                    <div class="grup-input">
+                        <label>Masukkan data tunggal (pisahkan dengan koma):</label>
+                        <input type="text" id="stat10-data" class="input-putih" placeholder="Contoh: 6, 7, 8, 8, 9, 10">
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK10Statistika()">Hitung Ukuran Data</button>
+                    <div id="res-k10-stat" class="kotak-hasil">Menghitung Mean, Median, Modus, Jangkauan, dan Simpangan Rata-rata (SR).</div>
+                `;
+            } else if (bab === '8') {
+                // Bab 8: Peluang Kejadian
+                wadah.innerHTML = `
+                    <h3>Bab 8: Peluang Kejadian <span class="rumus-badge">P(A) & Fh</span></h3>
+                    <div class="grid-input-3">
+                        <div class="grup-input"><label>Kejadian n(A)</label><input type="number" id="pel10-na" class="input-putih" placeholder="1"></div>
+                        <div class="grup-input"><label>Sampel n(S)</label><input type="number" id="pel10-ns" class="input-putih" placeholder="6"></div>
+                        <div class="grup-input"><label>Percobaan (N)</label><input type="number" id="pel10-n" class="input-putih" placeholder="30"></div>
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK10Peluang()">Hitung Peluang & Fh</button>
+                    <div id="res-k10-peluang" class="kotak-hasil">Menghitung Peluang P(A), Komplemen P(Aᶜ), dan Frekuensi Harapan (Fh).</div>
+                `;
+            }
+        }
+
+        // Fungsi Perhitungan Kelas 10
+        function hitungK10Eksponen() {
+            const a = parseFloat(document.getElementById('k10-eks-a').value);
+            const n = parseFloat(document.getElementById('k10-eks-n').value);
+            const res = document.getElementById('res-k10-eks');
+            if (isNaN(a) || isNaN(n)) { res.innerHTML = '<span class="teks-error">Isi nilai a dan n!</span>'; return; }
+
+            const pangkat = Math.pow(a, n);
+            let teksAkar = '';
+            if (n === 0) {
+                teksAkar = 'Indeks akar n tidak boleh 0';
+            } else if (a < 0 && n % 2 === 0) {
+                teksAkar = 'Imajiner (akar genap dari bilangan negatif)';
+            } else {
+                const nilaiAkar = a < 0 ? -Math.pow(Math.abs(a), 1 / n) : Math.pow(a, 1 / n);
+                teksAkar = `<sup>${n}</sup>√(${a}) = <strong>${fmt(nilaiAkar, 5)}</strong>`;
+            }
+
+            res.innerHTML = `
+                <span class="rumus-teks">Rumus: aⁿ = a × a × ... (n kali) | ⁿ√a = a^(1/n)</span>
+                Hasil Pangkat (${a}<sup>${n}</sup>) = <strong>${fmt(pangkat, 6)}</strong><br>
+                Hasil Akar: ${teksAkar}
+            `;
+        }
+
+        function hitungK10Log() {
+            const a = parseFloat(document.getElementById('k10-log-a').value);
+            const b = parseFloat(document.getElementById('k10-log-b').value);
+            const res = document.getElementById('res-k10-log');
+            if (isNaN(a) || isNaN(b)) { res.innerHTML = '<span class="teks-error">Isi basis (a) dan numerus (b)!</span>'; return; }
+            if (a <= 0 || a === 1 || b <= 0) { res.innerHTML = '<span class="teks-error">Syarat tidak terpenuhi: a > 0, a ≠ 1, b > 0.</span>'; return; }
+
+            const hasil = Math.log(b) / Math.log(a);
+            res.innerHTML = `
+                <span class="rumus-teks">Rumus: ᵃlog(b) = log(b) / log(a) ⇔ aˣ = b</span>
+                Langkah: log(${b}) / log(${a}) = ${fmt(Math.log10(b), 4)} / ${fmt(Math.log10(a), 4)}<br>
+                Hasil: <sup>${a}</sup>log(${b}) = <strong>${fmt(hasil, 6)}</strong>
+            `;
+        }
+
+        function ubahLabelDeret() {
+            const jenis = document.getElementById('k10-deret-jenis').value;
+            document.getElementById('lbl-deret-br').textContent = (jenis === 'aritmetika') ? 'Beda (b)' : 'Rasio (r)';
+        }
+
+        function hitungK10Deret() {
+            const jenis = document.getElementById('k10-deret-jenis').value;
+            const a = parseFloat(document.getElementById('k10-deret-a').value);
+            const br = parseFloat(document.getElementById('k10-deret-br').value);
+            const n = parseInt(document.getElementById('k10-deret-n').value);
+            const res = document.getElementById('res-k10-deret');
+
+            if (isNaN(a) || isNaN(br) || isNaN(n) || n < 1) {
+                res.innerHTML = '<span class="teks-error">Masukkan nilai a, b/r, dan n (bilangan bulat ≥ 1)!</span>';
+                return;
+            }
+
+            if (jenis === 'aritmetika') {
+                const un = a + (n - 1) * br;
+                const sn = (n / 2) * (2 * a + (n - 1) * br);
+                res.innerHTML = `
+                    <span class="rumus-teks">Un = a + (n-1)b | Sn = n/2 (2a + (n-1)b)</span>
+                    Suku ke-${n} (U<sub>${n}</sub>) = <strong>${fmt(un)}</strong><br>
+                    Jumlah ${n} suku (S<sub>${n}</sub>) = <strong>${fmt(sn)}</strong>
+                `;
+            } else {
+                const un = a * Math.pow(br, n - 1);
+                const sn = (br === 1) ? (a * n) : (a * (Math.pow(br, n) - 1) / (br - 1));
+                let sTakHingga = 'Divergen (syarat konvergen: -1 < r < 1)';
+                if (Math.abs(br) < 1) {
+                    sTakHingga = `<strong>${fmt(a / (1 - br))}</strong>`;
+                }
+                res.innerHTML = `
+                    <span class="rumus-teks">Un = a·rⁿ⁻¹ | Sn = a(rⁿ-1)/(r-1) | S∞ = a/(1-r)</span>
+                    Suku ke-${n} (U<sub>${n}</sub>) = <strong>${fmt(un)}</strong><br>
+                    Jumlah ${n} suku (S<sub>${n}</sub>) = <strong>${fmt(sn)}</strong><br>
+                    Deret Tak Hingga (S∞) = ${sTakHingga}
+                `;
+            }
+        }
+
+        function ubahDimensiVektor() {
+            const dim = document.getElementById('k10-vek-dim').value;
+            const gu = document.getElementById('grup-vek-u');
+            const gv = document.getElementById('grup-vek-v');
+            if (dim === '2') {
+                gu.className = 'grid-input-2';
+                gu.innerHTML = `
+                    <div class="grup-input"><label>x₁</label><input type="number" id="k10-ux" class="input-putih" placeholder="3"></div>
+                    <div class="grup-input"><label>y₁</label><input type="number" id="k10-uy" class="input-putih" placeholder="4"></div>
+                `;
+                gv.className = 'grid-input-2';
+                gv.innerHTML = `
+                    <div class="grup-input"><label>x₂</label><input type="number" id="k10-vx" class="input-putih" placeholder="1"></div>
+                    <div class="grup-input"><label>y₂</label><input type="number" id="k10-vy" class="input-putih" placeholder="2"></div>
+                `;
+            } else {
+                gu.className = 'grid-input-3';
+                gu.innerHTML = `
+                    <div class="grup-input"><label>x₁</label><input type="number" id="k10-ux" class="input-putih" placeholder="2"></div>
+                    <div class="grup-input"><label>y₁</label><input type="number" id="k10-uy" class="input-putih" placeholder="3"></div>
+                    <div class="grup-input"><label>z₁</label><input type="number" id="k10-uz" class="input-putih" placeholder="6"></div>
+                `;
+                gv.className = 'grid-input-3';
+                gv.innerHTML = `
+                    <div class="grup-input"><label>x₂</label><input type="number" id="k10-vx" class="input-putih" placeholder="1"></div>
+                    <div class="grup-input"><label>y₂</label><input type="number" id="k10-vy" class="input-putih" placeholder="-2"></div>
+                    <div class="grup-input"><label>z₂</label><input type="number" id="k10-vz" class="input-putih" placeholder="2"></div>
+                `;
+            }
+        }
+
+        function hitungK10Vektor() {
+            const dim = document.getElementById('k10-vek-dim').value;
+            const ux = parseFloat(document.getElementById('k10-ux').value);
+            const uy = parseFloat(document.getElementById('k10-uy').value);
+            const vx = parseFloat(document.getElementById('k10-vx').value);
+            const vy = parseFloat(document.getElementById('k10-vy').value);
+            const uz = dim === '3' ? parseFloat(document.getElementById('k10-uz').value) : 0;
+            const vz = dim === '3' ? parseFloat(document.getElementById('k10-vz').value) : 0;
+            const res = document.getElementById('res-k10-vektor');
+
+            if ([ux, uy, vx, vy, uz, vz].some(isNaN)) {
+                res.innerHTML = '<span class="teks-error">Harap isi semua komponen vektor!</span>';
+                return;
+            }
+
+            const magU = Math.sqrt(ux*ux + uy*uy + uz*uz);
+            const magV = Math.sqrt(vx*vx + vy*vy + vz*vz);
+            const dot = ux*vx + uy*vy + uz*vz;
+
+            if (dim === '2') {
+                res.innerHTML = `
+                    <span class="rumus-teks">|u| = √(x₁²+y₁²) | u•v = x₁x₂ + y₁y₂</span>
+                    u + v = <strong>(${ux+vx}, ${uy+vy})</strong> | u - v = <strong>(${ux-vx}, ${uy-vy})</strong><br>
+                    Panjang |u| = <strong>${fmt(magU)}</strong> | Panjang |v| = <strong>${fmt(magV)}</strong><br>
+                    Perkalian Titik (u • v) = <strong>${fmt(dot)}</strong>
+                `;
+            } else {
+                res.innerHTML = `
+                    <span class="rumus-teks">|u| = √(x₁²+y₁²+z₁²) | u•v = x₁x₂ + y₁y₂ + z₁z₂</span>
+                    u + v = <strong>(${ux+vx}, ${uy+vy}, ${uz+vz})</strong><br>
+                    u - v = <strong>(${ux-vx}, ${uy-vy}, ${uz-vz})</strong><br>
+                    |u| = <strong>${fmt(magU)}</strong> | |v| = <strong>${fmt(magV)}</strong> | u • v = <strong>${fmt(dot)}</strong>
+                `;
+            }
+        }
+
+        function renderModeTrigo10() {
+            const mode = document.getElementById('k10-trigo-mode').value;
+            const w = document.getElementById('wadah-input-trigo10');
+            if (mode === 'siku') {
+                w.innerHTML = `
+                    <div class="grid-input-2">
+                        <div class="grup-input"><label>Sisi Depan (De)</label><input type="number" id="tr10-1" class="input-putih" placeholder="3"></div>
+                        <div class="grup-input"><label>Sisi Samping (Sa)</label><input type="number" id="tr10-2" class="input-putih" placeholder="4"></div>
+                    </div>
+                `;
+            } else if (mode === 'cosinus') {
+                w.innerHTML = `
+                    <div class="grid-input-3">
+                        <div class="grup-input"><label>Sisi b</label><input type="number" id="tr10-1" class="input-putih" placeholder="6"></div>
+                        <div class="grup-input"><label>Sisi c</label><input type="number" id="tr10-2" class="input-putih" placeholder="8"></div>
+                        <div class="grup-input"><label>Sudut A (°)</label><input type="number" id="tr10-3" class="input-putih" placeholder="60"></div>
+                    </div>
+                `;
+            } else {
+                w.innerHTML = `
+                    <div class="grid-input-3">
+                        <div class="grup-input"><label>Sisi a</label><input type="number" id="tr10-1" class="input-putih" placeholder="10"></div>
+                        <div class="grup-input"><label>Sudut A (°)</label><input type="number" id="tr10-2" class="input-putih" placeholder="30"></div>
+                        <div class="grup-input"><label>Sudut B (°)</label><input type="number" id="tr10-3" class="input-putih" placeholder="45"></div>
+                    </div>
+                `;
+            }
+        }
+
+        function hitungK10Trigo() {
+            const mode = document.getElementById('k10-trigo-mode').value;
+            const v1 = parseFloat(document.getElementById('tr10-1').value);
+            const v2 = parseFloat(document.getElementById('tr10-2').value);
+            const v3 = parseFloat(document.getElementById('tr10-3')?.value);
+            const res = document.getElementById('res-k10-trigo');
+
+            if (mode === 'siku') {
+                if (isNaN(v1) || isNaN(v2) || v1 <= 0 || v2 <= 0) {
+                    res.innerHTML = '<span class="teks-error">Masukkan sisi depan dan samping (> 0)!</span>'; return;
+                }
+                const mi = Math.sqrt(v1*v1 + v2*v2);
+                const sudut = Math.atan2(v1, v2) * (180 / Math.PI);
+                res.innerHTML = `
+                    <span class="rumus-teks">sin = De/Mi | cos = Sa/Mi | tan = De/Sa</span>
+                    Sisi Miring (Mi) = <strong>${fmt(mi)}</strong> (Sudut θ ≈ ${fmt(sudut, 2)}°)<br>
+                    sin θ = <strong>${fmt(v1/mi)}</strong> | cos θ = <strong>${fmt(v2/mi)}</strong> | tan θ = <strong>${fmt(v1/v2)}</strong>
+                `;
+            } else if (mode === 'cosinus') {
+                if ([v1, v2, v3].some(x => isNaN(x) || x <= 0)) {
+                    res.innerHTML = '<span class="teks-error">Isi sisi b, sisi c, dan sudut A!</span>'; return;
+                }
+                const rad = v3 * Math.PI / 180;
+                const aKuadrat = v1*v1 + v2*v2 - 2*v1*v2*Math.cos(rad);
+                const a = Math.sqrt(aKuadrat);
+                res.innerHTML = `
+                    <span class="rumus-teks">Aturan Cosinus: a² = b² + c² - 2bc·cos(A)</span>
+                    a² = ${fmt(aKuadrat)} → Sisi a = <strong>${fmt(a)}</strong>
+                `;
+            } else {
+                if ([v1, v2, v3].some(x => isNaN(x) || x <= 0)) {
+                    res.innerHTML = '<span class="teks-error">Isi sisi a, sudut A, dan sudut B!</span>'; return;
+                }
+                const sinA = Math.sin(v2 * Math.PI / 180);
+                const sinB = Math.sin(v3 * Math.PI / 180);
+                if (Math.abs(sinA) < 1e-10) { res.innerHTML = '<span class="teks-error">sin(A) tidak boleh 0.</span>'; return; }
+                const b = (v1 * sinB) / sinA;
+                res.innerHTML = `
+                    <span class="rumus-teks">Aturan Sinus: a / sin(A) = b / sin(B)</span>
+                    Sisi b = (${v1} × sin ${v3}°) / sin ${v2}° = <strong>${fmt(b)}</strong>
+                `;
+            }
+        }
+
+        function hitungK10SPLDV() {
+            const a1 = parseFloat(document.getElementById('spl-a1').value);
+            const b1 = parseFloat(document.getElementById('spl-b1').value);
+            const c1 = parseFloat(document.getElementById('spl-c1').value);
+            const a2 = parseFloat(document.getElementById('spl-a2').value);
+            const b2 = parseFloat(document.getElementById('spl-b2').value);
+            const c2 = parseFloat(document.getElementById('spl-c2').value);
+            const res = document.getElementById('res-k10-spldv');
+
+            if ([a1, b1, c1, a2, b2, c2].some(isNaN)) {
+                res.innerHTML = '<span class="teks-error">Harap isi semua koefisien persamaan 1 dan 2!</span>'; return;
+            }
+
+            const D = a1 * b2 - a2 * b1;
+            const Dx = c1 * b2 - c2 * b1;
+            const Dy = a1 * c2 - a2 * c1;
+
+            if (D === 0) {
+                if (Dx === 0 && Dy === 0) {
+                    res.innerHTML = '<span class="rumus-teks">D = 0, Dx = 0, Dy = 0</span>Sistem memiliki <strong>tak hingga penyelesaian</strong> (garis berimpit).';
+                } else {
+                    res.innerHTML = '<span class="rumus-teks">D = 0, Dx ≠ 0 atau Dy ≠ 0</span>Sistem <strong>tidak memiliki penyelesaian</strong> (garis sejajar).';
+                }
+                return;
+            }
+
+            const x = Dx / D;
+            const y = Dy / D;
+            res.innerHTML = `
+                <span class="rumus-teks">D = ${D} | Dx = ${Dx} | Dy = ${Dy}</span>
+                Himpunan Penyelesaian: <strong>x = ${fmt(x)}</strong> dan <strong>y = ${fmt(y)}</strong>
+            `;
+        }
+
+        function hitungK10Kuadrat() {
+            const a = parseFloat(document.getElementById('fk-a').value);
+            const b = parseFloat(document.getElementById('fk-b').value);
+            const c = parseFloat(document.getElementById('fk-c').value);
+            const res = document.getElementById('res-k10-kuadrat');
+
+            if ([a, b, c].some(isNaN)) { res.innerHTML = '<span class="teks-error">Isi koefisien a, b, dan c!</span>'; return; }
+            if (a === 0) { res.innerHTML = '<span class="teks-error">Nilai a tidak boleh 0!</span>'; return; }
+
+            const D = b * b - 4 * a * c;
+            const xp = -b / (2 * a);
+            const yp = -D / (4 * a);
+
+            let teksAkar = '';
+            if (D > 0) {
+                const x1 = (-b + Math.sqrt(D)) / (2 * a);
+                const x2 = (-b - Math.sqrt(D)) / (2 * a);
+                teksAkar = `Akar Real Berbeda: <strong>x₁ = ${fmt(x1)}</strong>, <strong>x₂ = ${fmt(x2)}</strong>`;
+            } else if (D === 0) {
+                teksAkar = `Akar Real Kembar: <strong>x₁ = x₂ = ${fmt(xp)}</strong>`;
+            } else {
+                const im = Math.sqrt(Math.abs(D)) / (2 * a);
+                teksAkar = `Akar Imajiner: <strong>${fmt(xp)} ± ${fmt(Math.abs(im))}i</strong>`;
+            }
+
+            res.innerHTML = `
+                <span class="rumus-teks">D = b² - 4ac | Puncak = (-b/2a, -D/4a)</span>
+                Diskriminan (D) = <strong>${fmt(D)}</strong><br>
+                ${teksAkar}<br>
+                Titik Puncak (xp, yp) = <strong>(${fmt(xp)}, ${fmt(yp)})</strong>
+            `;
+        }
+
+        function hitungK10Statistika() {
+            const raw = document.getElementById('stat10-data').value;
+            const res = document.getElementById('res-k10-stat');
+            const data = raw.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x));
+
+            if (data.length === 0) { res.innerHTML = '<span class="teks-error">Masukkan minimal 1 angka dipisahkan koma!</span>'; return; }
+
+            const urut = [...data].sort((a, b) => a - b);
+            const n = urut.length;
+            const mean = urut.reduce((s, v) => s + v, 0) / n;
+            const median = (n % 2 === 1) ? urut[Math.floor(n / 2)] : (urut[n / 2 - 1] + urut[n / 2]) / 2;
+
+            const frek = {};
+            let maxF = 0;
+            urut.forEach(v => { frek[v] = (frek[v] || 0) + 1; if (frek[v] > maxF) maxF = frek[v]; });
+            const modus = (maxF === 1 && n > 1) ? 'Tidak ada' : Object.keys(frek).filter(k => frek[k] === maxF).join(', ') + ` (${maxF}×)`;
+
+            const jangkauan = urut[n - 1] - urut[0];
+            const sr = urut.reduce((s, v) => s + Math.abs(v - mean), 0) / n;
+
+            res.innerHTML = `
+                <span class="rumus-teks">Mean = Σx/n | SR = Σ|x - x̄|/n (n = ${n})</span>
+                Mean (x̄) = <strong>${fmt(mean)}</strong> | Median = <strong>${fmt(median)}</strong><br>
+                Modus = <strong>${modus}</strong> | Jangkauan = <strong>${fmt(jangkauan)}</strong><br>
+                Simpangan Rata-rata (SR) = <strong>${fmt(sr)}</strong>
+            `;
+        }
+
+        function hitungK10Peluang() {
+            const na = parseFloat(document.getElementById('pel10-na').value);
+            const ns = parseFloat(document.getElementById('pel10-ns').value);
+            const nPercobaan = parseFloat(document.getElementById('pel10-n').value);
+            const res = document.getElementById('res-k10-peluang');
+
+            if (isNaN(na) || isNaN(ns) || ns <= 0 || na < 0 || na > ns) {
+                res.innerHTML = '<span class="teks-error">Syarat valid: 0 ≤ n(A) ≤ n(S) dan n(S) > 0!</span>'; return;
+            }
+
+            const pa = na / ns;
+            const pac = 1 - pa;
+            const fh = !isNaN(nPercobaan) && nPercobaan > 0 ? pa * nPercobaan : null;
+
+            res.innerHTML = `
+                <span class="rumus-teks">P(A) = n(A)/n(S) | P(Aᶜ) = 1 - P(A) | Fh = P(A) × N</span>
+                Peluang P(A) = ${na}/${ns} = <strong>${fmt(pa)}</strong> (${fmt(pa * 100, 2)}%)<br>
+                Peluang Komplemen P(Aᶜ) = <strong>${fmt(pac)}</strong><br>
+                ${fh !== null ? `Frekuensi Harapan (Fh) = <strong>${fmt(fh)}</strong> kali` : 'Isi N untuk menghitung Frekuensi Harapan'}
+            `;
+        }
+
+        /* =============================================================
+           3. MATERI KELAS 11 (FASE F1) - BAB 1 S.D. BAB 3
+           ============================================================= */
+        function renderBabKelas11() {
+            const bab = document.getElementById('pilih-bab-11').value;
+            const wadah = document.getElementById('konten-kelas11');
+
+            if (bab === '1') {
+                // Bab 1: Fungsi Komposisi & Invers
+                wadah.innerHTML = `
+                    <h3>Bab 1: Fungsi Komposisi & Invers <span class="rumus-badge">Linear f(x) & g(x)</span></h3>
+                    <div class="sub-judul">Fungsi f(x) = ax + b dan g(x) = cx + d</div>
+                    <div class="grid-input-2">
+                        <div class="grup-input"><label>Koefisien a (pada f)</label><input type="number" id="f11-a" class="input-putih" placeholder="2"></div>
+                        <div class="grup-input"><label>Konstanta b (pada f)</label><input type="number" id="f11-b" class="input-putih" placeholder="3"></div>
+                    </div>
+                    <div class="grid-input-3">
+                        <div class="grup-input"><label>Koefisien c (pada g)</label><input type="number" id="f11-c" class="input-putih" placeholder="4"></div>
+                        <div class="grup-input"><label>Konstanta d (pada g)</label><input type="number" id="f11-d" class="input-putih" placeholder="-1"></div>
+                        <div class="grup-input"><label>Nilai x</label><input type="number" id="f11-x" class="input-putih" placeholder="5"></div>
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK11Fungsi()">Hitung Komposisi & Invers</button>
+                    <div id="res-k11-fungsi" class="kotak-hasil">Menghitung (f∘g)(x), (g∘f)(x), dan fungsi invers f⁻¹(x).</div>
+                `;
+            } else if (bab === '2') {
+                // Bab 2: Geometri Lingkaran
+                wadah.innerHTML = `
+                    <h3>Bab 2: Geometri Lingkaran <span class="rumus-badge">Busur, Juring & Persamaan</span></h3>
+                    <div class="grid-input-2">
+                        <div class="grup-input"><label>Jari-jari (r)</label><input type="number" id="ling-r" class="input-putih" placeholder="14"></div>
+                        <div class="grup-input"><label>Sudut Pusat α (°)</label><input type="number" id="ling-sudut" class="input-putih" placeholder="90"></div>
+                    </div>
+                    <div class="grid-input-2">
+                        <div class="grup-input"><label>Pusat a (x₀)</label><input type="number" id="ling-a" class="input-putih" placeholder="2"></div>
+                        <div class="grup-input"><label>Pusat b (y₀)</label><input type="number" id="ling-b" class="input-putih" placeholder="-3"></div>
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK11Lingkaran()">Hitung Geometri Lingkaran</button>
+                    <div id="res-k11-lingkaran" class="kotak-hasil">Menghitung Panjang Busur, Luas Juring, dan Persamaan Lingkaran (x-a)²+(y-b)²=r².</div>
+                `;
+            } else if (bab === '3') {
+                // Bab 3: Statistika Lanjut (Bivariat)
+                wadah.innerHTML = `
+                    <h3>Bab 3: Statistika Bivariat <span class="rumus-badge">Regresi & Korelasi</span></h3>
+                    <div class="grup-input">
+                        <label>Data Variabel Bebas X (pisahkan koma):</label>
+                        <input type="text" id="biv-x" class="input-putih" placeholder="Contoh: 1, 2, 3, 4, 5">
+                    </div>
+                    <div class="grup-input">
+                        <label>Data Variabel Terikat Y (jumlah data sama):</label>
+                        <input type="text" id="biv-y" class="input-putih" placeholder="Contoh: 2, 4, 5, 4, 5">
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK11Bivariat()">Hitung Regresi & Korelasi</button>
+                    <div id="res-k11-bivariat" class="kotak-hasil">Menghitung Korelasi Pearson (r), Koefisien Determinasi (r²), dan Persamaan Regresi ŷ = a + bx.</div>
+                `;
+            }
+        }
+
+        // Fungsi Perhitungan Kelas 11
+        function hitungK11Fungsi() {
+            const a = parseFloat(document.getElementById('f11-a').value);
+            const b = parseFloat(document.getElementById('f11-b').value);
+            const c = parseFloat(document.getElementById('f11-c').value);
+            const d = parseFloat(document.getElementById('f11-d').value);
+            const x = parseFloat(document.getElementById('f11-x').value);
+            const res = document.getElementById('res-k11-fungsi');
+
+            if ([a, b, c, d, x].some(isNaN)) {
+                res.innerHTML = '<span class="teks-error">Harap isi semua nilai a, b, c, d, dan x!</span>'; return;
+            }
+
+            // (f o g)(x) = a(cx + d) + b = (ac)x + (ad + b)
+            const koefFog = a * c;
+            const konstFog = a * d + b;
+            const nilaiFog = koefFog * x + konstFog;
+
+            // (g o f)(x) = c(ax + b) + d = (ca)x + (cb + d)
+            const koefGof = c * a;
+            const konstGof = c * b + d;
+            const nilaiGof = koefGof * x + konstGof;
+
+            // Invers f^-1(x) = (x - b) / a
+            let teksInvers = '';
+            if (a === 0) {
+                teksInvers = 'f⁻¹(x) tidak ada karena a = 0';
+            } else {
+                const tandaB = b >= 0 ? `- ${b}` : `+ ${Math.abs(b)}`;
+                const nilaiInv = (x - b) / a;
+                teksInvers = `f⁻¹(x) = (x ${tandaB}) / ${a} → f⁻¹(${x}) = <strong>${fmt(nilaiInv)}</strong>`;
+            }
+
+            res.innerHTML = `
+                <span class="rumus-teks">(f∘g)(x) = f(g(x)) | (g∘f)(x) = g(f(x))</span>
+                (f∘g)(x) = ${koefFog}x + (${konstFog}) → (f∘g)(${x}) = <strong>${fmt(nilaiFog)}</strong><br>
+                (g∘f)(x) = ${koefGof}x + (${konstGof}) → (g∘f)(${x}) = <strong>${fmt(nilaiGof)}</strong><br>
+                Invers: ${teksInvers}
+            `;
+        }
+
+        function hitungK11Lingkaran() {
+            const r = parseFloat(document.getElementById('ling-r').value);
+            const sudut = parseFloat(document.getElementById('ling-sudut').value);
+            const a = parseFloat(document.getElementById('ling-a').value) || 0;
+            const b = parseFloat(document.getElementById('ling-b').value) || 0;
+            const res = document.getElementById('res-k11-lingkaran');
+
+            if (isNaN(r) || r <= 0 || isNaN(sudut) || sudut <= 0) {
+                res.innerHTML = '<span class="teks-error">Masukkan jari-jari (r > 0) dan sudut pusat (> 0)!</span>'; return;
+            }
+
+            const busur = (sudut / 360) * 2 * Math.PI * r;
+            const juring = (sudut / 360) * Math.PI * r * r;
+            const rKuadrat = r * r;
+
+            const partX = a === 0 ? 'x²' : (a > 0 ? `(x - ${a})²` : `(x + ${Math.abs(a)})²`);
+            const partY = b === 0 ? 'y²' : (b > 0 ? `(y - ${b})²` : `(y + ${Math.abs(b)})²`);
+
+            res.innerHTML = `
+                <span class="rumus-teks">Busur = (α/360°)·2πr | Juring = (α/360°)·πr²</span>
+                Panjang Busur = <strong>${fmt(busur)}</strong><br>
+                Luas Juring = <strong>${fmt(juring)}</strong><br>
+                Persamaan: <strong>${partX} + ${partY} = ${fmt(rKuadrat)}</strong>
+            `;
+        }
+
+        function hitungK11Bivariat() {
+            const arrX = document.getElementById('biv-x').value.split(',').map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+            const arrY = document.getElementById('biv-y').value.split(',').map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+            const res = document.getElementById('res-k11-bivariat');
+
+            if (arrX.length < 2 || arrX.length !== arrY.length) {
+                res.innerHTML = '<span class="teks-error">Jumlah data X dan Y harus sama dan minimal 2 pasang!</span>'; return;
+            }
+
+            const n = arrX.length;
+            const sumX = arrX.reduce((s, v) => s + v, 0);
+            const sumY = arrY.reduce((s, v) => s + v, 0);
+            const sumXY = arrX.reduce((s, v, i) => s + v * arrY[i], 0);
+            const sumX2 = arrX.reduce((s, v) => s + v * v, 0);
+            const sumY2 = arrY.reduce((s, v) => s + v * v, 0);
+
+            const pembilang = n * sumXY - sumX * sumY;
+            const penyebutX = n * sumX2 - sumX * sumX;
+            const penyebutY = n * sumY2 - sumY * sumY;
+
+            if (penyebutX === 0 || penyebutY === 0) {
+                res.innerHTML = '<span class="teks-error">Variansi data X atau Y bernilai 0 (tidak bisa dihitung).</span>'; return;
+            }
+
+            const r = pembilang / Math.sqrt(penyebutX * penyebutY);
+            const r2 = r * r;
+            const b = pembilang / penyebutX;
+            const a = (sumY - b * sumX) / n;
+
+            const tandaB = b >= 0 ? `+ ${fmt(b)}x` : `- ${fmt(Math.abs(b))}x`;
+
+            res.innerHTML = `
+                <span class="rumus-teks">ŷ = a + bx | r = Korelasi Pearson | r² = Determinasi</span>
+                Persamaan Regresi: <strong>ŷ = ${fmt(a)} ${tandaB}</strong><br>
+                Korelasi (r) = <strong>${fmt(r)}</strong><br>
+                Koefisien Determinasi (r²) = <strong>${fmt(r2)}</strong> (${fmt(r2 * 100, 2)}%)
+            `;
+        }
+
+        /* =============================================================
+           4. MATERI KELAS 12 (FASE F2) - BAB 1 S.D. BAB 3
+           ============================================================= */
+        function renderBabKelas12() {
+            const bab = document.getElementById('pilih-bab-12').value;
+            const wadah = document.getElementById('konten-kelas12');
+
+            if (bab === '1') {
+                // Bab 1: Matematika Finansial
+                wadah.innerHTML = `
+                    <h3>Bab 1: Matematika Finansial <span class="rumus-badge">Bunga & Anuitas</span></h3>
+                    <div class="grup-input">
+                        <label>Pilih Jenis Perhitungan Keuangan:</label>
+                        <select id="fin-mode" class="select-putih" onchange="ubahLabelFinansial()">
+                            <option value="tunggal">Bunga Tunggal: Mn = M₀(1 + i·n)</option>
+                            <option value="majemuk">Bunga Majemuk: Mn = M₀(1 + i)ⁿ</option>
+                            <option value="anuitas">Anuitas Pinjaman: A = M·i / (1 - (1+i)⁻ⁿ)</option>
+                        </select>
+                    </div>
+                    <div class="grid-input-3">
+                        <div class="grup-input"><label id="lbl-fin-m">Modal Awal (M₀)</label><input type="number" id="fin-m" class="input-putih" placeholder="1000000"></div>
+                        <div class="grup-input"><label>Suku Bunga (%)</label><input type="number" id="fin-i" class="input-putih" placeholder="5"></div>
+                        <div class="grup-input"><label>Periode (n)</label><input type="number" id="fin-n" class="input-putih" placeholder="4"></div>
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK12Finansial()">Hitung Finansial</button>
+                    <div id="res-k12-finansial" class="kotak-hasil">Masukkan Modal/Pinjaman, persentase bunga per periode, dan lama periode (n).</div>
+                `;
+            } else if (bab === '2') {
+                // Bab 2: Kombinatorik & Peluang Lanjut
+                wadah.innerHTML = `
+                    <h3>Bab 2: Kombinatorik & Peluang <span class="rumus-badge">n!, nPr, nCr</span></h3>
+                    <div class="grid-input-2">
+                        <div class="grup-input"><label>Total Objek (n)</label><input type="number" id="komb-n" class="input-putih" placeholder="6"></div>
+                        <div class="grup-input"><label>Objek Dipilih (r)</label><input type="number" id="komb-r" class="input-putih" placeholder="2"></div>
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK12Kombinatorik()">Hitung n!, nPr & nCr</button>
+                    <div id="res-k12-komb" class="kotak-hasil">Syarat: n dan r bilangan bulat non-negatif dengan n ≥ r.</div>
+
+                    <div class="sub-pemisah">
+                        <div class="sub-judul">Peluang Kejadian Majemuk (A dan B)</div>
+                        <div class="grid-input-2">
+                            <div class="grup-input"><label>Peluang P(A) (0–1)</label><input type="number" step="0.01" id="pel12-pa" class="input-putih" placeholder="0.5"></div>
+                            <div class="grup-input"><label>Peluang P(B) (0–1)</label><input type="number" step="0.01" id="pel12-pb" class="input-putih" placeholder="0.4"></div>
+                        </div>
+                        <button class="btn-hitung-rumus" onclick="hitungK12PeluangMajemuk()">Hitung Saling Lepas & Bebas</button>
+                        <div id="res-k12-pelmaj" class="kotak-hasil">Menghitung P(A∪B) saling lepas dan P(A∩B) saling bebas.</div>
+                    </div>
+                `;
+            } else if (bab === '3') {
+                // Bab 3: Kalkulus Dasar
+                wadah.innerHTML = `
+                    <h3>Bab 3: Kalkulus Dasar <span class="rumus-badge">f(x) = axⁿ + bx + c</span></h3>
+                    <div class="grid-input-2">
+                        <div class="grup-input"><label>Koefisien a</label><input type="number" id="kal-a" class="input-putih" placeholder="3"></div>
+                        <div class="grup-input"><label>Pangkat n (bil. bulat)</label><input type="number" id="kal-n" class="input-putih" placeholder="2"></div>
+                    </div>
+                    <div class="grid-input-2">
+                        <div class="grup-input"><label>Koefisien b</label><input type="number" id="kal-b" class="input-putih" placeholder="4"></div>
+                        <div class="grup-input"><label>Konstanta c</label><input type="number" id="kal-c" class="input-putih" placeholder="-5"></div>
+                    </div>
+                    <div class="grid-input-3">
+                        <div class="grup-input"><label>Titik Limit/Turunan (k)</label><input type="number" id="kal-k" class="input-putih" placeholder="2"></div>
+                        <div class="grup-input"><label>Batas Bawah (a)</label><input type="number" id="kal-ba" class="input-putih" placeholder="0"></div>
+                        <div class="grup-input"><label>Batas Atas (b)</label><input type="number" id="kal-bb" class="input-putih" placeholder="2"></div>
+                    </div>
+                    <button class="btn-hitung-rumus" onclick="hitungK12Kalkulus()">Hitung Limit, Turunan & Integral</button>
+                    <div id="res-k12-kalkulus" class="kotak-hasil">Menghitung Limit x→k, Turunan pertama f'(x) & f'(k), serta Integral Tentu ∫ f(x) dx.</div>
+                `;
+            }
+        }
+
+        // Fungsi Perhitungan Kelas 12
+        function ubahLabelFinansial() {
+            const mode = document.getElementById('fin-mode').value;
+            document.getElementById('lbl-fin-m').textContent = (mode === 'anuitas') ? 'Pinjaman (M)' : 'Modal Awal (M₀)';
+        }
+
+        function hitungK12Finansial() {
+            const mode = document.getElementById('fin-mode').value;
+            const m = parseFloat(document.getElementById('fin-m').value);
+            const persen = parseFloat(document.getElementById('fin-i').value);
+            const n = parseFloat(document.getElementById('fin-n').value);
+            const res = document.getElementById('res-k12-finansial');
+
+            if ([m, persen, n].some(isNaN) || m <= 0 || persen <= 0 || n <= 0) {
+                res.innerHTML = '<span class="teks-error">Masukkan nilai positif untuk Modal, Bunga (%), dan Periode!</span>'; return;
+            }
+
+            const i = persen / 100;
+            if (mode === 'tunggal') {
+                const bunga = m * i * n;
+                const mn = m + bunga;
+                res.innerHTML = `
+                    <span class="rumus-teks">Mn = M₀(1 + i·n) | Bunga = M₀ · i · n</span>
+                    Total Bunga = <strong>${fmtRp(bunga)}</strong><br>
+                    Modal Akhir (M<sub>${n}</sub>) = <strong>${fmtRp(mn)}</strong>
+                `;
+            } else if (mode === 'majemuk') {
+                const mn = m * Math.pow(1 + i, n);
+                const bunga = mn - m;
+                res.innerHTML = `
+                    <span class="rumus-teks">Mn = M₀(1 + i)ⁿ</span>
+                    Total Bunga Majemuk = <strong>${fmtRp(bunga)}</strong><br>
+                    Modal Akhir (M<sub>${n}</sub>) = <strong>${fmtRp(mn)}</strong>
+                `;
+            } else {
+                const anuitas = (m * i) / (1 - Math.pow(1 + i, -n));
+                const totalBayar = anuitas * n;
+                res.innerHTML = `
+                    <span class="rumus-teks">A = (M · i) / (1 - (1 + i)⁻ⁿ)</span>
+                    Cicilan Anuitas / Periode = <strong>${fmtRp(anuitas)}</strong><br>
+                    Total Pembayaran (${n}×) = <strong>${fmtRp(totalBayar)}</strong>
+                `;
+            }
+        }
+
+        function hitungK12Kombinatorik() {
+            const n = parseInt(document.getElementById('komb-n').value);
+            const r = parseInt(document.getElementById('komb-r').value);
+            const res = document.getElementById('res-k12-komb');
+
+            if (isNaN(n) || isNaN(r) || n < 0 || r < 0 || r > n || n > 170) {
+                res.innerHTML = '<span class="teks-error">Syarat valid: 0 ≤ r ≤ n ≤ 170 (bilangan bulat)!</span>'; return;
+            }
+
+            const fn = faktorial(n);
+            const fr = faktorial(r);
+            const fnr = faktorial(n - r);
+            const nPr = Math.round(fn / fnr);
+            const nCr = Math.round(fn / (fr * fnr));
+
+            res.innerHTML = `
+                <span class="rumus-teks">nPr = n!/(n-r)! | nCr = n!/(r!(n-r)!)</span>
+                Faktorial (${n}!) = <strong>${fn.toLocaleString('id-ID')}</strong><br>
+                Permutasi (<sub>${n}</sub>P<sub>${r}</sub>) = <strong>${nPr.toLocaleString('id-ID')}</strong><br>
+                Kombinasi (<sub>${n}</sub>C<sub>${r}</sub>) = <strong>${nCr.toLocaleString('id-ID')}</strong>
+            `;
+        }
+
+        function hitungK12PeluangMajemuk() {
+            const pa = parseFloat(document.getElementById('pel12-pa').value);
+            const pb = parseFloat(document.getElementById('pel12-pb').value);
+            const res = document.getElementById('res-k12-pelmaj');
+
+            if (isNaN(pa) || isNaN(pb) || pa < 0 || pa > 1 || pb < 0 || pb > 1) {
+                res.innerHTML = '<span class="teks-error">Nilai peluang P(A) dan P(B) harus antara 0 sampai 1!</span>'; return;
+            }
+
+            const salingBebas = pa * pb;
+            const salingLepas = Math.min(1, pa + pb);
+            const tidakSalingLepas = pa + pb - salingBebas;
+
+            res.innerHTML = `
+                <span class="rumus-teks">Bebas: P(A∩B) = P(A)·P(B) | Lepas: P(A∪B) = P(A)+P(B)</span>
+                Saling Bebas P(A ∩ B) = <strong>${fmt(salingBebas)}</strong><br>
+                Saling Lepas P(A ∪ B) = <strong>${fmt(salingLepas)}</strong><br>
+                Tidak Saling Lepas P(A ∪ B) = <strong>${fmt(tidakSalingLepas)}</strong>
+            `;
+        }
+
+        function hitungK12Kalkulus() {
+            const a = parseFloat(document.getElementById('kal-a').value) || 0;
+            const n = parseInt(document.getElementById('kal-n').value);
+            const b = parseFloat(document.getElementById('kal-b').value) || 0;
+            const c = parseFloat(document.getElementById('kal-c').value) || 0;
+            const k = parseFloat(document.getElementById('kal-k').value);
+            const ba = parseFloat(document.getElementById('kal-ba').value);
+            const bb = parseFloat(document.getElementById('kal-bb').value);
+            const res = document.getElementById('res-k12-kalkulus');
+
+            if (isNaN(n) || n < 0 || isNaN(k) || isNaN(ba) || isNaN(bb)) {
+                res.innerHTML = '<span class="teks-error">Isi pangkat n (≥ 0), titik k, dan batas integral a, b!</span>'; return;
+            }
+
+            // Fungsi asal f(x) = a*x^n + b*x + c
+            const f = (x) => a * Math.pow(x, n) + b * x + c;
+            const nilaiLimit = f(k);
+
+            // Turunan pertama f'(x) = (a*n)*x^(n-1) + b
+            const koefTurunan = a * n;
+            const pangkatTurunan = n - 1;
+            const nilaiTurunanK = (n === 0 ? 0 : koefTurunan * Math.pow(k, pangkatTurunan)) + b;
+
+            let teksTurunan = '';
+            if (n === 0 || koefTurunan === 0) {
+                teksTurunan = `${b}`;
+            } else if (pangkatTurunan === 0) {
+                teksTurunan = `${koefTurunan + b}`;
+            } else if (pangkatTurunan === 1) {
+                teksTurunan = `${koefTurunan}x + (${b})`;
+            } else {
+                teksTurunan = `${koefTurunan}x<sup>${pangkatTurunan}</sup> + (${b})`;
+            }
+
+            // Anti-turunan F(x) = (a/(n+1))*x^(n+1) + (b/2)*x^2 + c*x
+            const F = (x) => (a / (n + 1)) * Math.pow(x, n + 1) + (b / 2) * Math.pow(x, 2) + c * x;
+            const integralTentu = F(bb) - F(ba);
+
+            res.innerHTML = `
+                <span class="rumus-teks">f(x) = ${a}xⁿ + (${b})x + (${c})</span>
+                <strong>1. Limit</strong> (x → ${k}) = <strong>${fmt(nilaiLimit)}</strong><br>
+                <strong>2. Turunan</strong> f'(x) = ${teksTurunan} → f'(${k}) = <strong>${fmt(nilaiTurunanK)}</strong><br>
+                <strong>3. Integral Tentu</strong> [<sub>${ba}</sub>∫<sup>${bb}</sup> f(x) dx] = <strong>${fmt(integralTentu)}</strong>
+            `;
+        }
+
+        // Inisialisasi konten awal saat halaman dimuat
+        window.onload = function() {
+            renderBabKelas10();
+            renderBabKelas11();
+            renderBabKelas12();
+        };
+    </script>
+
+</body>
+</html>
